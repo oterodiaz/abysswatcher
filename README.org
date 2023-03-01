@@ -1,0 +1,8 @@
+#+title: AbyssWatcher
+
+AbyssWatcher lets you run any program or script after the system's theme changes. You can use it to change themes in programs that don't respect system settings, such as Vim, Emacs, or even your shell prompt or terminal colorscheme!
+
+The gif below shows AbyssWatcher in action, running [[./sample-script.sh][a simple shell script]] that [[https://github.com/julienXX/terminal-notifier][sends a notification]] every time the theme changes.
+
+#+attr_html: :alt "AbyssWatcher Example GIF"
+[[./abysswatcher.gif]]
