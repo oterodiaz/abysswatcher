@@ -19,7 +19,7 @@ You should also make the file executable:
 chmod +x abysswatcher
 #+end_src
 
-When you run the program for the first time, you might see a popup window saying that the app can't run because it wasn't signed by an identified developer. This happens because the app hasn't been signed, and you can run it anyway by going to "System Settings.app -> Privacy and Security", scroll towards the bottom and click "Allow Anyway" in the "Security" section.
+When you run the program for the first time, you might see a popup window saying that the app can't run because it wasn't signed by an identified developer. This happens because the app hasn't been signed at all, and you can run it anyway by going to "System Settings.app -> Privacy and Security", scroll towards the bottom and click "Allow Anyway" in the "Security" section.
 
 Refer to the section /Running AbyssWatcher as a Service/ for further instructions.
 
