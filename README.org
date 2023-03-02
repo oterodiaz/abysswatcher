@@ -1,6 +1,6 @@
 #+title: AbyssWatcher
 
-AbyssWatcher lets you run any program or script after the system's theme changes. You can use it to change themes in programs that don't respect system settings, such as Vim, Emacs, or even your shell prompt or terminal colorscheme!
+AbyssWatcher lets you run any program or script after the system's theme changes. You can use it to change themes in programs that don't respect system settings, such as Neovim, Emacs, or even your shell prompt or terminal colorscheme! In fact, I've made a blog post explaining how to do that, which you can read [[https://oterodiaz.com/posts/making-neovim-and-emacs-adapt-to-system-dark-mode][here]].
 
 The gif below shows AbyssWatcher in action, running [[./sample-script.sh][a simple shell script]] that [[https://github.com/julienXX/terminal-notifier][sends a notification]] every time the theme changes.
 
@@ -34,9 +34,9 @@ If your script needs arguments, pass them normally:
 abysswatcher /path/to/your/script --argument
 #+end_src
 
-The script will be run directly *after* the system's theme has changed. The ~DARK_MODE~ environment variable will be made available to the script when in dark mode (/i.e./ theme changed from light to dark), but it will instead be unset when in light mode. Take a look at [[./sample-script.sh][this POSIX shell script]] for an example on how to detect this.
+The script will be run immediately *after* the system's theme has changed (with no noticeable delay). The ~DARK_MODE~ environment variable will be made available to the script when in dark mode (/i.e./ theme changed from light to dark), but it will instead be unset when in light mode. Take a look at [[./sample-script.sh][this POSIX shell script]] for an example on how to detect this.
 
-This program works best as a background service. See the section /Running AbyssWatcher as a Service/ to learn how to do that.
+This program works best as a background service. Continue reading the next section (/Running AbyssWatcher as a Service/) to learn how to do that.
 
 * Running AbyssWatcher as a Service
 You will need to place the file [[./com.oterodiaz.abysswatcher.plist][com.oterodiaz.abysswatcher.plist]] in =~/Library/LaunchAgents=. However, some parts of this file are placeholders, as they depend on your computer's settings. First, clone this repository:
