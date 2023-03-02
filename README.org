@@ -6,3 +6,118 @@ The gif below shows AbyssWatcher in action, running [[./sample-script.sh][a simp
 
 #+attr_html: :alt "AbyssWatcher Example GIF"
 [[./abysswatcher.gif]]
+
+* Installation
+AbyssWatcher works from macOS Mojave (10.14) onwards.
+
+You can find a precompiled universal binary for Intel and Apple Silicon Macs on the releases page. Alternatively, refer to the /Build/ section for instructions on how to compile it yourself.
+
+Once you have the binary, place it in an appropriate directory such as ~/usr/local/bin~ or =~/.local/bin=, making sure that it is in your ~PATH~.
+
+Refer to the section /Running AbyssWatcher as a Service/ for further instructions.
+
+* Usage
+Run AbyssWatcher with the path to a script as an argument.
+#+begin_src shell
+abysswatcher /path/to/your/script
+#+end_src
+
+If your script needs arguments, pass them normally:
+#+begin_src shell
+abysswatcher /path/to/your/script --argument
+#+end_src
+
+The script will be run directly *after* the system's theme has changed. The ~DARK_MODE~ environment variable will made available to the script when in dark mode (/i.e./ theme changed from light to dark), but it will instead be unset when in light mode. Take a look at [[./sample-script.sh][this POSIX shell script]] for an example on how to detect this.
+
+This program works best as a background service. See the section /Running AbyssWatcher as a Service/ to learn how to do that.
+
+* Running AbyssWatcher as a Service
+You will need to place the file [[./com.oterodiaz.abysswatcher.plist][com.oterodiaz.abysswatcher.plist]] in =~/Library/LaunchAgents=. However, some parts of this file are placeholders, as they depend on your computer's settings. First, clone this repository:
+#+begin_src shell
+git clone https://gitlab.com/oterodiaz/abysswatcher.git
+cd abysswatcher
+#+end_src
+
+Set a temporary environment variable with the path to the script you want AbyssWatcher to run. Due to a limitation in how ~launchd~ services work, if you write the path as a string (between double or single quotes), *make sure to write the full path*: ~/Users/your_username/...~ instead of =~=.
+#+begin_src shell
+export PATH_TO_USER_SCRIPT=/path/to/your/script
+#+end_src
+
+Substitute the placeholders in the ~.plist~ file:
+#+begin_src shell
+sed -i".bak" "s|ABYSSWATCHER_PATH|$(which abysswatcher)|" com.oterodiaz.abysswatcher.plist
+sed -i".bak" "s|PATH_TO_USER_SCRIPT|$PATH_TO_USER_SCRIPT|" com.oterodiaz.abysswatcher.plist
+sed -i".bak" "s|SUBSTITUTE_PATH|$PATH|" com.oterodiaz.abysswatcher.plist
+rm -f com.oterodiaz.abysswatcher.plist.bak
+#+end_src
+
+Copy the file to the appropriate directory:
+#+begin_src shell
+cp com.oterodiaz.abysswatcher.plist ~/Library/LaunchAgents/
+#+end_src
+
+Load the service (It'll run instantly and automatically when you log in):
+#+begin_src shell
+launchctl load -w ~/Library/LaunchAgents/com.oterodiaz.abysswatcher.plist
+#+end_src
+
+If you later modify the file, you'll either need to reboot or unload and load the service again. Here's how to unload it:
+#+begin_src shell
+launchctl load -w ~/Library/LaunchAgents/com.oterodiaz.abysswatcher.plist
+#+end_src
+
+*** Passing Arguments to the Script
+If your script needs arguments, you'll have to modify the service file in =~/Library/LaunchAgents/com.oterodiaz.abysswatcher.plist= to add a line for each individual argument directly below your script path, as follows:
+#+begin_example
+<key>ProgramArguments</key>
+<array>
+    <string>abysswatcher</string>
+    <string>/path/to/your/script</string>
+    <string>--script-argument1</string>
+    <string>--script-argument2</string>
+</array>
+#+end_example
+
+*** Passing Additional Environment Variables to the Script
+By default, your script will have access to a snapshot of your ~PATH~ environment variable at the time of the service file creation. To update the ~PATH~ or add additional environment variables you'll have to edit the service file like was mentioned in the previous subsection, but this time focusing on the ~EnvironmentVariables~ dictionary towards the bottom of the file. In the example, an additional ~SCRIPTS~ environment variable is passed, which contains the path to the user's scripts directory.
+#+begin_example
+<key>EnvironmentVariables</key>
+<dict>
+    <key>PATH</key>
+    <string>SUBSTITUTE_PATH</string>
+    <key>SCRIPTS</key>
+    <string>/Users/username/.scripts</string>
+</dict>
+#+end_example
+
+* Build
+You will need to have Xcode installed, along with the Xcode Command Line Tools. Xcode can be downloaded from [[https://apps.apple.com/es/app/xcode/id497799835][the Mac App Store]], while the latter can be installed by running the following command:
+#+begin_src shell
+xcode-select --install
+#+end_src
+
+Then clone this repository:
+#+begin_src shell
+git clone https://gitlab.com/oterodiaz/abysswatcher.git
+cd abysswatcher
+#+end_src
+
+And compile the program with the ~swift~ command:
+#+begin_src shell
+swift build -c release
+#+end_src
+
+The resulting binary will be located in ~.build/release/abysswatcher~.
+
+*** Universal Binary
+The above instructions compile a binary for your Mac's native architecture, but it is possible to compile a universal binary that works both on Intel and Apple Silicon by running the following command instead:
+#+begin_src shell
+swift build -c release --arch arm64 --arch x86_64
+#+end_src
+
+This time, the file will be located in a different directory: ~.build/apple/Products/Release/abysswatcher~.
+
+/Note: You can run the/ ~file~ /command on the binary to check whether it is universal:/
+#+begin_src shell
+file abysswatcher
+#+end_src
