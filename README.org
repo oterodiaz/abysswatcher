@@ -19,7 +19,7 @@ You should also make the file executable:
 chmod +x abysswatcher
 #+end_src
 
-When you run the program for the first time, you might see a popup window saying that the app can't run because it wasn't signed by an identified developer. This happens because the app hasn't been signed at all, and you can run it anyway by going to "System Settings.app -> Privacy and Security", scroll towards the bottom and click "Allow Anyway" in the "Security" section.
+When you run the program for the first time, you might see a popup window saying that the app can't run because it wasn't signed by an identified developer. This happens because the app hasn't been signed at all, but you can run it anyway by navigating to "System Settings.app -> Privacy and Security", scrolling towards the bottom and clicking "Allow Anyway" in the "Security" section.
 
 Refer to the section /Running AbyssWatcher as a Service/ for further instructions.
 
@@ -34,7 +34,7 @@ If your script needs arguments, pass them normally:
 abysswatcher /path/to/your/script --argument
 #+end_src
 
-The script will be run directly *after* the system's theme has changed. The ~DARK_MODE~ environment variable will made available to the script when in dark mode (/i.e./ theme changed from light to dark), but it will instead be unset when in light mode. Take a look at [[./sample-script.sh][this POSIX shell script]] for an example on how to detect this.
+The script will be run directly *after* the system's theme has changed. The ~DARK_MODE~ environment variable will be made available to the script when in dark mode (/i.e./ theme changed from light to dark), but it will instead be unset when in light mode. Take a look at [[./sample-script.sh][this POSIX shell script]] for an example on how to detect this.
 
 This program works best as a background service. See the section /Running AbyssWatcher as a Service/ to learn how to do that.
 
@@ -70,7 +70,7 @@ launchctl load -w ~/Library/LaunchAgents/com.oterodiaz.abysswatcher.plist
 
 If you later modify the file, you'll either need to reboot or unload and load the service again. Here's how to unload it:
 #+begin_src shell
-launchctl load -w ~/Library/LaunchAgents/com.oterodiaz.abysswatcher.plist
+launchctl unload -w ~/Library/LaunchAgents/com.oterodiaz.abysswatcher.plist
 #+end_src
 
 *** Passing Arguments to the Script
@@ -86,7 +86,7 @@ If your script needs arguments, you'll have to modify the service file in =~/Lib
 #+end_example
 
 *** Passing Additional Environment Variables to the Script
-By default, your script will have access to a snapshot of your ~PATH~ environment variable at the time of the service file creation. To update the ~PATH~ or add additional environment variables you'll have to edit the service file like was mentioned in the previous subsection, but this time focusing on the ~EnvironmentVariables~ dictionary towards the bottom of the file. In the example, an additional ~SCRIPTS~ environment variable is passed, which contains the path to the user's scripts directory.
+By default, your script will have access to a snapshot of your ~PATH~ environment variable at the time of the service file creation. To update the ~PATH~ or add additional environment variables you'll have to edit the service file as mentioned in the previous section, but this time focusing on the ~EnvironmentVariables~ dictionary towards the bottom of the file. In the example, an additional ~SCRIPTS~ environment variable is passed, which contains the path to the user's scripts directory.
 #+begin_example
 <key>EnvironmentVariables</key>
 <dict>
