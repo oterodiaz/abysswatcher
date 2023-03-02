@@ -10,10 +10,10 @@ import Cocoa
 @main
 public struct AbyssWatcher {
     public static func main() {
-        let script_path = parseArguments()
+        let script = parseArguments()
 
         // Run the user's script
-        runProcess(path: script_path)
+        runProcess(path: script)
 
         // Add an observer to re-run the script whenever the system's theme changes
         DistributedNotificationCenter
@@ -22,7 +22,7 @@ public struct AbyssWatcher {
                          object:  nil,
                          queue:   nil
             ) { _ in
-                runProcess(path: script_path)
+                runProcess(path: script)
             }
 
         // Add an observer to re-run the script if the system's theme changed during sleep
@@ -34,7 +34,7 @@ public struct AbyssWatcher {
                          object:  nil,
                          queue:   nil
             ) { _ in
-                runProcess(path: script_path)
+                runProcess(path: script)
             }
 
         NSApplication.shared.run()
@@ -53,7 +53,7 @@ public struct AbyssWatcher {
     ///     # System is in light mode
     /// fi
     /// ```
-    private static func runProcess(path script: String) {
+    private static func runProcess(path script: [String]) {
         let isDark = UserDefaults.standard.string(forKey: "AppleInterfaceStyle") == "Dark"
         let process = Process()
 
@@ -61,7 +61,7 @@ public struct AbyssWatcher {
         var env = ProcessInfo.processInfo.environment
         env["DARK_MODE"] = isDark ? "1" : nil
 
-        process.arguments = [script]
+        process.arguments = script
         process.environment = env
         process.executableURL = URL(string: "file:///usr/bin/env")
         process.standardError = FileHandle.standardError
@@ -76,20 +76,25 @@ public struct AbyssWatcher {
         }
     }
 
-    private static func parseArguments() -> String {
-        let arguments = CommandLine.arguments
-        let programName = (arguments[0] as NSString).lastPathComponent
-        guard arguments.count == 2 else {
+    private static func parseArguments() -> [String] {
+        var arguments = CommandLine.arguments
+        let programName = (arguments.remove(at: 0) as NSString).lastPathComponent
+        guard arguments.count >= 1 else {
             printHelp(programName: programName)
             exit(1)
         }
 
-        if arguments[1] == "-h" || arguments[1] == "--help" {
+        if arguments[0] == "-h" || arguments[0] == "--help" {
             printHelp(programName: programName)
             exit(0)
-        } else {
-            return arguments[1]
         }
+
+        var script_path = arguments.remove(at: 0)
+        if script_path.contains("~") {
+            script_path = (script_path as NSString).expandingTildeInPath
+        }
+
+        return [script_path] + arguments
     }
 
     private static func printHelp(programName: String) {
