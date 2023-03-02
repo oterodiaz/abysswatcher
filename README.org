@@ -58,6 +58,7 @@ rm -f com.oterodiaz.abysswatcher.plist.bak
 
 Copy the file to the appropriate directory:
 #+begin_src shell
+mkdir -p ~/Library/LaunchAgents
 cp com.oterodiaz.abysswatcher.plist ~/Library/LaunchAgents/
 #+end_src
 
