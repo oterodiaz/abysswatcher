@@ -14,6 +14,11 @@ You can find a precompiled universal binary for Intel and Apple Silicon Macs on 
 
 Once you have the binary, place it in an appropriate directory such as ~/usr/local/bin~ or =~/.local/bin=, making sure that it is in your ~PATH~.
 
+You should also make the file executable:
+#+begin_src shell
+chmod +x abysswatcher
+#+end_src
+
 Refer to the section /Running AbyssWatcher as a Service/ for further instructions.
 
 * Usage
