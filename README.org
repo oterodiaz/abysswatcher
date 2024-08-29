@@ -41,7 +41,7 @@ This program works best as a background service. Continue reading the next secti
 * Running AbyssWatcher as a Service
 You will need to place the file [[./com.oterodiaz.abysswatcher.plist][com.oterodiaz.abysswatcher.plist]] in =~/Library/LaunchAgents=. However, some parts of this file are placeholders, as they depend on your computer's settings. First, clone this repository:
 #+begin_src shell
-git clone https://gitlab.com/oterodiaz/abysswatcher.git
+git clone https://github.com/oterodiaz/abysswatcher.git
 cd abysswatcher
 #+end_src
 
@@ -106,7 +106,7 @@ xcode-select --install
 
 Then clone this repository:
 #+begin_src shell
-git clone https://gitlab.com/oterodiaz/abysswatcher.git
+git clone https://github.com/oterodiaz/abysswatcher.git
 cd abysswatcher
 #+end_src
 
